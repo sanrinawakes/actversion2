@@ -310,6 +310,29 @@ font-size: 1.2em;
 margin-bottom: 10px;
 }
 
+.gpt-guidance {
+background: linear-gradient(135deg, #e8eaf6 0%, #c5cae9 100%);
+border-radius: 15px;
+padding: 30px;
+margin: 30px 0;
+text-align: center;
+}
+
+.gpt-guidance p {
+font-size: 1.1em;
+line-height: 1.8;
+color: var(--text-primary);
+margin: 0;
+}
+
+.gpt-guidance span {
+font-weight: 700;
+color: #5c6bc0;
+background: rgba(255, 255, 255, 0.5);
+padding: 2px 8px;
+border-radius: 5px;
+}
+
 .button-container {
 display: flex;
 justify-content: center;
@@ -434,23 +457,13 @@ font-size: 1em;
 
 <div id="result-screen" style="display:none;">
 <h2 id="result-title">診断結果</h2>
-<p id="result-text">あなたのACT診断コードは...</p>
+<p id="result-text">あなたのACT診断コードは</p>
 <h3 id="result-code"></h3>
+<div class="gpt-guidance">
+<p>このコードの意味や、今のあなたに合った行動のヒントを知りたい方は、<br>
+GPTに「<span id="code-example"></span>の意味を教えて」などと尋ねてみてください。</p>
+</div>
 <div class="statistics-info" id="statistics-container"></div>
-<div class="result-details">
-<div class="result-section">
-<h3>あなたのタイプ</h3>
-<p id="type-description"></p>
-</div>
-<div class="result-section">
-<h3>意識レベル</h3>
-<p id="level-description"></p>
-</div>
-<div class="result-section">
-<h3>次のステップ</h3>
-<p id="next-step"></p>
-</div>
-</div>
 <button id="restart-button" class="button-primary" onclick="restartQuiz()">もう一度診断する</button>
 </div>
 </div>
@@ -2059,62 +2072,7 @@ function showResults() {
     document.getElementById('result-screen').style.display = 'block';
     
     document.getElementById('result-code').textContent = resultCode;
-    
-    // タイプ説明
-    const typeDescriptions = {
-        'SVA': '内向的で理想主義的、分析的なタイプ。深い洞察力と独創的な発想を持ち、論理的に物事を追求します。',
-        'SVM': '内向的で理想主義的、バランス型のタイプ。内なるビジョンを大切にしながら、現実との調和を図ります。',
-        'SVE': '内向的で理想主義的、感情豊かなタイプ。深い共感力と理想を持ち、静かに人を支えます。',
-        'SGA': '内向的で現実的、分析的なタイプ。確実性を重視し、論理的に物事を進めます。',
-        'SGM': '内向的で現実的、バランス型のタイプ。着実さと柔軟性を兼ね備えています。',
-        'SGE': '内向的で現実的、感情豊かなタイプ。誠実で思いやり深く、静かに人を支えます。',
-        'SMA': '内向的でバランス型、分析的なタイプ。冷静で客観的な判断力を持ちます。',
-        'SMM': '内向的で全体的にバランスの取れたタイプ。静かな中にも柔軟性があります。',
-        'SME': '内向的でバランス型、感情豊かなタイプ。穏やかで人の気持ちに寄り添えます。',
-        'MVA': 'バランス型で理想主義的、分析的なタイプ。ビジョンと論理を両立させます。',
-        'MVM': 'バランス型で理想主義的、調和を重んじるタイプ。理想と現実の架け橋となります。',
-        'MVE': 'バランス型で理想主義的、感情豊かなタイプ。人々を理想へと導く温かさがあります。',
-        'MGA': 'バランス型で現実的、分析的なタイプ。実践的で論理的なアプローチを取ります。',
-        'MGM': 'バランス型で現実的、調和を重んじるタイプ。着実に物事を進める調整役です。',
-        'MGE': 'バランス型で現実的、感情豊かなタイプ。実践的でありながら人の心を大切にします。',
-        'MMA': 'バランス型で全体的に中庸、分析的なタイプ。客観的で公平な判断ができます。',
-        'MMM': '全ての面でバランスの取れたタイプ。あらゆる状況に適応できる柔軟性を持ちます。',
-        'MME': 'バランス型で全体的に中庸、感情豊かなタイプ。穏やかで人との調和を大切にします。',
-        'PVA': '外向的で理想主義的、分析的なタイプ。革新的なアイデアを論理的に実現します。',
-        'PVM': '外向的で理想主義的、バランス型のタイプ。ビジョンを持って人々を導きます。',
-        'PVE': '外向的で理想主義的、感情豊かなタイプ。情熱的に理想を追求し、人を巻き込みます。',
-        'PGA': '外向的で現実的、分析的なタイプ。実践的なリーダーシップを発揮します。',
-        'PGM': '外向的で現実的、バランス型のタイプ。現実的な目標に向かって人を導きます。',
-        'PGE': '外向的で現実的、感情豊かなタイプ。人との繋がりを大切に実践的に行動します。',
-        'PMA': '外向的でバランス型、分析的なタイプ。社交的でありながら論理的です。',
-        'PMM': '外向的で全体的にバランスの取れたタイプ。どんな人とも上手く関われます。',
-        'PME': '外向的でバランス型、感情豊かなタイプ。明るく人の輪の中心となります。'
-    };
-    
-    // レベル説明
-    const levelDescriptions = {
-        1: '防衛段階：生存と安全が最優先。外的要因に大きく左右される。',
-        2: '葛藤段階：成長への欲求と現実の間で揺れ動く。',
-        3: '自立段階：自己責任を理解し、主体的に生きている。',
-        4: '調和段階：自他の幸せのバランスを大切にする。',
-        5: '創造段階：独自の価値を生み出し、社会に貢献する。',
-        6: '超越段階：自他の境界を超えて、全体性の中で生きる。'
-    };
-    
-    // 次のステップ
-    const nextSteps = {
-        1: '安全な環境を確保し、基本的なニーズを満たすことから始めましょう。',
-        2: '自己観察を深め、感情のパターンに気づくことが大切です。',
-        3: '目標を明確にし、着実に行動していきましょう。',
-        4: '他者への貢献を通じて、より大きな喜びを見出せるでしょう。',
-        5: 'あなたの独自性を活かし、世界に新しい価値を提供してください。',
-        6: '全体性の中で、あなたの存在が光となり、多くの人を導いていくでしょう。'
-    };
-    
-    document.getElementById('type-description').textContent = 
-        typeDescriptions[type] || 'ユニークなタイプです。';
-    document.getElementById('level-description').textContent = levelDescriptions[level];
-    document.getElementById('next-step').textContent = nextSteps[level];
+    document.getElementById('code-example').textContent = resultCode;
     
     // 統計情報
     const statsContainer = document.getElementById('statistics-container');
