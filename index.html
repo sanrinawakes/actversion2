@@ -107,6 +107,50 @@ margin-bottom: 25px;
 line-height: 1.8;
 }
 
+/* 同意セクションのスタイル */
+.agreement-section {
+background: #f8f9fa;
+border-radius: 15px;
+padding: 25px;
+margin: 30px 0;
+text-align: left;
+border: 1px solid #e0e0e0;
+}
+
+.agreement-section h3 {
+color: #d32f2f;
+font-size: 1.2em;
+margin-bottom: 15px;
+font-weight: 500;
+}
+
+.agreement-text {
+font-size: 0.95em;
+line-height: 1.8;
+color: var(--text-primary);
+margin-bottom: 20px;
+}
+
+.agreement-checkbox {
+display: flex;
+align-items: center;
+gap: 10px;
+margin-top: 20px;
+}
+
+.agreement-checkbox input[type="checkbox"] {
+width: 20px;
+height: 20px;
+cursor: pointer;
+}
+
+.agreement-checkbox label {
+cursor: pointer;
+font-size: 1em;
+color: var(--text-primary);
+font-weight: 500;
+}
+
 #question-text {
 font-size: 1.3em;
 color: var(--text-primary);
@@ -408,6 +452,9 @@ font-size: 2em;
 padding: 12px 30px;
 font-size: 1em;
 }
+.agreement-section {
+padding: 20px;
+}
 }
 </style>
 </head>
@@ -419,7 +466,20 @@ font-size: 1em;
 <p id="intro-text-1">この診断は、あなたの内面を探求し、自己変容の道筋を照らし出すためのお手伝いをします。</p>
 <p id="intro-text-2">質問を通じて、あなたの現在のタイプと人生のステージが明らかになります。</p>
 <p id="intro-text-3">※ 正直に、今の自分の実際の行動や感じ方を答えてください。</p>
-<button id="start-button" class="button-primary" onclick="startQuiz()">診断を開始する</button>
+
+<div class="agreement-section">
+<h3>⚠️ 著作権および利用規約について</h3>
+<div class="agreement-text">
+この診断は三凛さとしが開発した独自の「ACT診断」に基づくものであり、著作権法により保護されています。<br><br>
+無断での転載・引用・複製・改変・販売・公開・SNSへの掲載は禁止されています。
+</div>
+<div class="agreement-checkbox">
+<input type="checkbox" id="agreement-check" />
+<label for="agreement-check">私は上記の利用規約・著作権ポリシーに同意します。</label>
+</div>
+</div>
+
+<button id="start-button" class="button-primary" onclick="startQuiz()" disabled>診断を開始する</button>
 </div>
 
 <div id="personality-intro" style="display:none;">
@@ -488,6 +548,20 @@ let levelScores = {
     level5: 0,  // 高次的な回答数
     level6: 0   // 超越的な回答数
 };
+
+// ===== 同意チェックボックスの監視 =====
+document.addEventListener('DOMContentLoaded', function() {
+    const checkbox = document.getElementById('agreement-check');
+    const startButton = document.getElementById('start-button');
+    
+    checkbox.addEventListener('change', function() {
+        if (checkbox.checked) {
+            startButton.disabled = false;
+        } else {
+            startButton.disabled = true;
+        }
+    });
+});
 
 // ===== 意識レベル測定用質問（42問）改善版 =====
 const clQuestions = [
@@ -1932,6 +2006,14 @@ function determineType() {
 
 // ===== UI関数 =====
 function startQuiz() {
+    const checkbox = document.getElementById('agreement-check');
+    
+    // チェックボックスが確認されているか確認
+    if (!checkbox.checked) {
+        alert('診断を開始するには、利用規約・著作権ポリシーに同意していただく必要があります。');
+        return;
+    }
+    
     document.getElementById('start-screen').style.display = 'none';
     document.getElementById('quiz-screen').style.display = 'block';
     currentQuestionIndex = 0;
@@ -2151,6 +2233,10 @@ function restartQuiz() {
     document.getElementById('start-screen').style.display = 'block';
     currentQuestionIndex = 0;
     userAnswers = [];
+    
+    // チェックボックスもリセット
+    document.getElementById('agreement-check').checked = false;
+    document.getElementById('start-button').disabled = true;
 }
 </script>
 </body>
