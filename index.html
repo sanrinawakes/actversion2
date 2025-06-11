@@ -1902,6 +1902,12 @@ function determineLevel() {
     let hasLevel5Check = false;
     let hasLevel6Check = false;
     
+    // レベル確認質問の回答を個別にチェック
+    let level3CheckScores = [];
+    let level4CheckScores = [];
+    let level5CheckScores = [];
+    let level6CheckScores = [];
+    
     // 17番目の質問（お金の制約）の回答を取得
     let moneyQuestionScore = null;
     const moneyQuestionIndex = 16; // 配列は0から始まるので16
@@ -1911,6 +1917,9 @@ function determineLevel() {
     
     // 各回答をレベル別に集計
     let positiveAnswerCount = 0; // ポジティブな回答数をカウント
+    let negativeOneCount = 0; // -1の回答数をカウント
+    let negativeTwoCount = 0; // -2の回答数をカウント
+    
     clQuestions.forEach((question, index) => {
         const answerIndex = userAnswers[index];
         if (answerIndex !== undefined && question.choices[answerIndex]) {
@@ -1922,8 +1931,31 @@ function determineLevel() {
             if (choice.isLevel5Check && score > 0) hasLevel5Check = true;
             if (choice.isLevel6Check && score > 0) hasLevel6Check = true;
             
-            if (score === -2) levelScores.level1++;
-            else if (score === -1) levelScores.level2++;
+            // レベル3確認質問（質問35, 36）
+            if (index === 34 || index === 35) {
+                level3CheckScores.push(score);
+            }
+            // レベル4確認質問（質問37, 38）
+            if (index === 36 || index === 37) {
+                if (choice.isLevel4Check) level4CheckScores.push(score);
+            }
+            // レベル5確認質問（質問39, 40）
+            if (index === 38 || index === 39) {
+                if (choice.isLevel5Check) level5CheckScores.push(score);
+            }
+            // レベル6確認質問（質問41, 42）
+            if (index === 40 || index === 41) {
+                if (choice.isLevel6Check) level6CheckScores.push(score);
+            }
+            
+            if (score === -2) {
+                levelScores.level1++;
+                negativeTwoCount++;
+            }
+            else if (score === -1) {
+                levelScores.level2++;
+                negativeOneCount++;
+            }
             else if (score === 0) levelScores.level3++;
             else if (score === 1) {
                 positiveAnswerCount++; // ポジティブ回答をカウント
@@ -1946,17 +1978,37 @@ function determineLevel() {
     // レベル2のゲート：葛藤的回答が30%以上ならレベル2
     if ((levelScores.level1 + levelScores.level2) / totalQuestions >= 0.30) return 2;
     
+    // 新しい制限：-1が3つ以上または-2が1つ以上ある場合はレベル2まで
+    if (negativeOneCount >= 3 || negativeTwoCount >= 1) return 2;
+    
     // 通常のレベル判定
     let determinedLevel = 3; // デフォルト
     
-    // レベル6の判定：レベル6確認質問にポジティブに答えている必要がある
-    if (hasLevel6Check && levelScores.level6 >= 3) determinedLevel = 6;
-    // レベル5の判定：レベル5確認質問にポジティブに答えている必要がある
-    else if (hasLevel5Check && levelScores.level5 >= 3) determinedLevel = 5;
-    // レベル4の判定：レベル4確認質問にポジティブに答えている必要がある
-    else if (hasLevel4Check && levelScores.level4 >= 3) determinedLevel = 4;
+    // レベル3確認質問（質問35, 36）が両方+1でないとレベル4以上にはなれない
+    const level3BothPositive = level3CheckScores.length === 2 && level3CheckScores.every(score => score === 1);
+    
+    // レベル4確認質問（質問37, 38）が両方+1でないとレベル5以上にはなれない
+    const level4BothPositive = level4CheckScores.length === 2 && level4CheckScores.every(score => score === 1);
+    
+    // レベル5確認質問（質問39, 40）が両方+1でないとレベル6にはなれない
+    const level5BothPositive = level5CheckScores.length === 2 && level5CheckScores.every(score => score === 1);
+    
+    // レベル6の判定：レベル5確認質問も両方+1である必要がある
+    if (hasLevel6Check && levelScores.level6 >= 3 && level5BothPositive && level4BothPositive && level3BothPositive) {
+        determinedLevel = 6;
+    }
+    // レベル5の判定：レベル4確認質問も両方+1である必要がある
+    else if (hasLevel5Check && levelScores.level5 >= 3 && level4BothPositive && level3BothPositive) {
+        determinedLevel = 5;
+    }
+    // レベル4の判定：レベル3確認質問が両方+1である必要がある
+    else if (hasLevel4Check && levelScores.level4 >= 3 && level3BothPositive) {
+        determinedLevel = 4;
+    }
     // レベル3の判定
-    else if (levelScores.level3 / totalQuestions >= 0.25) determinedLevel = 3;
+    else if (levelScores.level3 / totalQuestions >= 0.25) {
+        determinedLevel = 3;
+    }
     
     // お金の制約による上限設定
     if (moneyQuestionScore !== null) {
