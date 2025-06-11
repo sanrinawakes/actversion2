@@ -1508,11 +1508,11 @@ const personalityQuestions = [
     
     {
         id: 88,
-        text: "失敗した時の捉え方は？",
+        text: "よくまわりから言われる言葉は？？",
         choices: [
-            { text: "次また挑戦すれば良いかと思うが対策は甘め。勢いやノリも大切", scores: { V2: 2 } },
-            { text: "原因を分析して、次に活かす", scores: { M2: 2 } },
-            { text: "二度と同じ失敗をしないよう、しっかり対策", scores: { G2: 2 } }
+            { text: "アイディアマンだね、夢があるね、ビジョンがすごいね", scores: { V2: 2 } },
+            { text: "冷静だね、調整役だね、バランス感覚があるね", scores: { M2: 2 } },
+            { text: "落ち着いてるね、堅実だね、バランス感覚があるね", scores: { G2: 2 } }
         ]
     },
     
@@ -1828,7 +1828,15 @@ function determineLevel() {
     let hasLevel5Check = false;
     let hasLevel6Check = false;
     
+    // 17番目の質問（お金の制約）の回答を取得
+    let moneyQuestionScore = null;
+    const moneyQuestionIndex = 16; // 配列は0から始まるので16
+    if (userAnswers[moneyQuestionIndex] !== undefined && clQuestions[moneyQuestionIndex].choices[userAnswers[moneyQuestionIndex]]) {
+        moneyQuestionScore = clQuestions[moneyQuestionIndex].choices[userAnswers[moneyQuestionIndex]].score;
+    }
+    
     // 各回答をレベル別に集計
+    let positiveAnswerCount = 0; // ポジティブな回答数をカウント
     clQuestions.forEach((question, index) => {
         const answerIndex = userAnswers[index];
         if (answerIndex !== undefined && question.choices[answerIndex]) {
@@ -1844,6 +1852,7 @@ function determineLevel() {
             else if (score === -1) levelScores.level2++;
             else if (score === 0) levelScores.level3++;
             else if (score === 1) {
+                positiveAnswerCount++; // ポジティブ回答をカウント
                 // ポジティブな回答をさらに分類
                 if (choice.isLevel6Check) levelScores.level6++;
                 else if (choice.isLevel5Check) levelScores.level5++;
@@ -1863,20 +1872,36 @@ function determineLevel() {
     // レベル2のゲート：葛藤的回答が30%以上ならレベル2
     if ((levelScores.level1 + levelScores.level2) / totalQuestions >= 0.30) return 2;
     
+    // 通常のレベル判定
+    let determinedLevel = 3; // デフォルト
+    
     // レベル6の判定：レベル6確認質問にポジティブに答えている必要がある
-    if (hasLevel6Check && levelScores.level6 >= 3) return 6;
-    
+    if (hasLevel6Check && levelScores.level6 >= 3) determinedLevel = 6;
     // レベル5の判定：レベル5確認質問にポジティブに答えている必要がある
-    if (hasLevel5Check && levelScores.level5 >= 3) return 5;
-    
+    else if (hasLevel5Check && levelScores.level5 >= 3) determinedLevel = 5;
     // レベル4の判定：レベル4確認質問にポジティブに答えている必要がある
-    if (hasLevel4Check && levelScores.level4 >= 3) return 4;
-    
+    else if (hasLevel4Check && levelScores.level4 >= 3) determinedLevel = 4;
     // レベル3の判定
-    if (levelScores.level3 / totalQuestions >= 0.25) return 3;
+    else if (levelScores.level3 / totalQuestions >= 0.25) determinedLevel = 3;
     
-    // デフォルトは3
-    return 3;
+    // お金の制約による上限設定
+    if (moneyQuestionScore !== null) {
+        if (moneyQuestionScore < 0) {
+            // スコアが0未満（-1または-2）の場合
+            if (positiveAnswerCount >= 30) {
+                // ポジティブ回答が30問以上（約71%）なら最高レベル3まで
+                determinedLevel = Math.min(determinedLevel, 3);
+            } else {
+                // それ以外は最高レベル2まで
+                determinedLevel = Math.min(determinedLevel, 2);
+            }
+        } else if (moneyQuestionScore < 1) {
+            // スコアが1未満（0）の場合、最高レベル3まで
+            determinedLevel = Math.min(determinedLevel, 3);
+        }
+    }
+    
+    return determinedLevel;
 }
 
 // ===== タイプ判定関数 =====
