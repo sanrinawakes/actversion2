@@ -1016,12 +1016,12 @@ const clQuestions = [
     // 35. レベル3確認質問1：主体的行動と選択
     {
         id: 35,
-        text: "周囲がどうであっても、自分の意思で決めた目標に向かって行動できていると感じますか？",
+        text: "周囲がどうであっても、自分の意思で決めた目標に向かって行動できていますか？",
         choices: [
             { text: "周囲の空気に合わせて行動することが多い", score: -1 },
             { text: "他人の期待や思惑に関係なく、自分の意志で行動する", score: 1 },
-            { text: "自分の意思で決めたことをベースに動くようにしている", score: 0 },
-            { text: "不安なので誰かに背中を押して欲しい", score: -2 },
+            { text: "時々迷うこともあるが、基本的には自分の意思で動くように心がけている", score: 0 },
+            { text: "不安なので誰かに背中を押して欲しい　もしくは、周囲や家族の目がありなかなか難しい", score: -2 },
             { text: "自分の選択や行動が周囲にも良い影響を与えている", score: 1, isHighLevel: true }
         ]
     },
@@ -1029,13 +1029,13 @@ const clQuestions = [
     // 36. レベル3確認質問2：感情との向き合い方
     {
         id: 36,
-        text: "怒りや不安などの強い感情が湧いたとき、どうしますか？",
+        text: "最近、怒りや不安などのネガティブ感情が湧いたとき、どうしましたか？",
         choices: [
-            { text: "感情を発散させる術を知っていて、他人に対して出すことはない", score: 1 },
-            { text: "感情に飲まれたり周囲にぶつけてしまうこともあるがあとで後悔する", score: -1 },
-            { text: "グッと堪えて我慢する", score: 0 },
-            { text: "正当な理由がある場合は怒ったり不安をぶつけて当然だ", score: -2 },
-            { text: "感情の奥にある気づきを得て、前向きな行動に変えている", score: 1, isHighLevel: true }
+            { text: "感情を発散させる術を知っていて、他人に対して出すことはなかった", score: 1 },
+            { text: "感情に飲まれたり周囲にぶつけてしまい、あとで後悔した", score: -1 },
+            { text: "一旦落ち着いてから、冷静に対処するようにした", score: 0 },
+            { text: "正当な理由があったので、やむなく怒ったり不安を表現した", score: -2 },
+            { text: "感情の奥にある気づきを得て、前向きな行動に変えた結果、状況が好転した", score: 1, isHighLevel: true }
         ]
     },
     
@@ -1058,7 +1058,7 @@ const clQuestions = [
         text: "最近、対立やすれ違いがあった場で、あなた自身が『関係性を良くしよう』と思って何か具体的に行動したことはありますか？",
         choices: [
             { text: "関係性がよくなるように意図的に行動し、感謝されたり実際に状況が好転した", score: 1, isLevel4Check: true },
-            { text: "あまりそういった経験がない/傍観した", score: -2 },
+            { text: "あまりそういった経験がない　もしくは、傍観した", score: -2 },
             { text: "場の空気を読んで発言を控えた", score: -1 },
             { text: "あまり自信はなかったが、少しだけ声をかけたり話をつなごうとした", score: 0 },
             { text: "関係者の意図を整理したり、話をつなぐことでその場を前向きに導いた", score: 1, isLevel4Check: true, isHighLevel: true }
@@ -1984,28 +1984,33 @@ function determineLevel() {
     // 通常のレベル判定
     let determinedLevel = 3; // デフォルト
     
-    // レベル3確認質問（質問35, 36）が両方+1でないとレベル4以上にはなれない
+   // レベル3確認質問（質問35, 36）が両方+1でないとレベル3以上にはなれない
     const level3BothPositive = level3CheckScores.length === 2 && level3CheckScores.every(score => score === 1);
     
-    // レベル4確認質問（質問37, 38）が両方+1でないとレベル5以上にはなれない
+    // レベル4確認質問（質問37, 38）が両方+1でないとレベル4以上にはなれない
     const level4BothPositive = level4CheckScores.length === 2 && level4CheckScores.every(score => score === 1);
     
-    // レベル5確認質問（質問39, 40）が両方+1でないとレベル6にはなれない
+    // レベル5確認質問（質問39, 40）が両方+1でないとレベル5以上にはなれない
     const level5BothPositive = level5CheckScores.length === 2 && level5CheckScores.every(score => score === 1);
     
+    // レベル3確認質問をクリアしていない場合はレベル2で確定
+    if (!level3BothPositive) {
+        return 2;
+    }
+    
     // レベル6の判定：レベル5確認質問も両方+1である必要がある
-    if (hasLevel6Check && levelScores.level6 >= 3 && level5BothPositive && level4BothPositive && level3BothPositive) {
+    if (hasLevel6Check && levelScores.level6 >= 3 && level5BothPositive && level4BothPositive) {
         determinedLevel = 6;
     }
     // レベル5の判定：レベル4確認質問も両方+1である必要がある
-    else if (hasLevel5Check && levelScores.level5 >= 3 && level4BothPositive && level3BothPositive) {
+    else if (hasLevel5Check && levelScores.level5 >= 3 && level4BothPositive) {
         determinedLevel = 5;
     }
     // レベル4の判定：レベル3確認質問が両方+1である必要がある
-    else if (hasLevel4Check && levelScores.level4 >= 3 && level3BothPositive) {
+    else if (hasLevel4Check && levelScores.level4 >= 3) {
         determinedLevel = 4;
     }
-    // レベル3の判定
+    // レベル3の判定（レベル3確認質問は既にクリア済み）
     else if (levelScores.level3 / totalQuestions >= 0.25) {
         determinedLevel = 3;
     }
