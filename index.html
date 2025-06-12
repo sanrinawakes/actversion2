@@ -2239,24 +2239,9 @@ function showResults() {
     document.getElementById('result-code').textContent = resultCode;
     document.getElementById('code-example').textContent = resultCode;
     
-    // 統計情報
-    const statsContainer = document.getElementById('statistics-container');
-    
-    // レベル別回答の内訳を表示
-    const totalCLQuestions = 42;
-    const breakdownText = `
-        <h4>診断統計</h4>
-        <p>意識レベル ${level} は全体の上位 ${getPercentileEstimate(level)}% に位置します。</p>
-        <p>あなたのタイプ ${type} は全体の約 ${getTypeFrequency(type)}% です。</p>
-        <h4>回答の内訳</h4>
-        <p>防衛的回答（-2）: ${levelScores.level1}問 / ${totalCLQuestions}問</p>
-        <p>葛藤的回答（-1）: ${levelScores.level2}問 / ${totalCLQuestions}問</p>
-        <p>中立的回答（0）: ${levelScores.level3}問 / ${totalCLQuestions}問</p>
-        <p>成長的回答（+1）: ${levelScores.level4 + levelScores.level5 + levelScores.level6}問 / ${totalCLQuestions}問</p>
-    `;
-    
-    statsContainer.innerHTML = breakdownText;
-}
+    // 統計情報を空にする
+const statsContainer = document.getElementById('statistics-container');
+statsContainer.innerHTML = '';
 
 function getPercentileEstimate(level) {
     const percentiles = {
