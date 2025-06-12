@@ -2075,8 +2075,8 @@ else if (negativeTwoCount >= 3 || (negativeOneCount + negativeTwoCount) >= 5) {
     // 通常のレベル判定
     let determinedLevel = 3; // デフォルト
     
-    // レベル3確認質問（質問35, 36）が両方+1でないとレベル3以上にはなれない
-    const level3BothPositive = level3CheckScores.length === 2 && level3CheckScores.every(score => score === 1);
+    // レベル3確認質問（質問35, 36）の合計が+1以上でないとレベル3以上にはなれない
+const level3SumPositive = level3CheckScores.length === 2 && level3CheckScores.reduce((sum, score) => sum + score, 0) >= 1;
     
     // レベル4確認質問（質問37, 38）が両方+1でないとレベル4以上にはなれない
     const level4BothPositive = level4CheckScores.length === 2 && level4CheckScores.every(score => score === 1);
@@ -2085,9 +2085,9 @@ else if (negativeTwoCount >= 3 || (negativeOneCount + negativeTwoCount) >= 5) {
     const level5BothPositive = level5CheckScores.length === 2 && level5CheckScores.every(score => score === 1);
     
     // レベル3確認質問をクリアしていない場合はレベル2で確定
-    if (!level3BothPositive) {
-        return 2;
-    }
+if (!level3SumPositive) {
+    return 2;
+}
     
     // レベル4の新しい要件チェック
     const meetsLevel4Requirements = level4Requirements.receivesMonthlyGratitude;
