@@ -549,6 +549,11 @@ let levelScores = {
     level6: 0   // 超越的な回答数
 };
 
+// レベル4判定用の質問への回答を保存
+let level4Requirements = {
+    receivesMonthlyGratitude: false
+};
+
 // レベル5判定用の質問への回答を保存
 let level5Requirements = {
     hasPublicRecognition: false,
@@ -1133,10 +1138,21 @@ const clQuestions = [
         ]
     },
     
-    // 追加のレベル5判定質問
-    // 43. 公的認知度
+    // 追加のレベル4判定質問
+    // 43. 月次感謝
     {
         id: 43,
+        text: "毎月10人以上の人から専門性、知識、スキル、行動などで直接的に助けられた、救われたと感謝されていますか？",
+        choices: [
+            { text: "はい", score: 1, isLevel4Requirement: 'receivesMonthlyGratitude' },
+            { text: "いいえ", score: 0 }
+        ]
+    },
+    
+    // 追加のレベル5判定質問
+    // 44. 公的認知度
+    {
+        id: 44,
         text: "とある分野や地域で1万人以上があなたのことをポジティブなイメージで認識していますか？",
         choices: [
             { text: "はい", score: 1, isLevel5Requirement: 'hasPublicRecognition' },
@@ -1144,9 +1160,9 @@ const clQuestions = [
         ]
     },
     
-    // 44. 後継者育成
+    // 45. 後継者育成
     {
-        id: 44,
+        id: 45,
         text: "知見や経験をシェアしたりアドバイスすることで、後続・後継となる人たちが100人以上育っていますか？",
         choices: [
             { text: "はい", score: 1, isLevel5Requirement: 'hasTrainedSuccessors' },
@@ -1154,9 +1170,9 @@ const clQuestions = [
         ]
     },
     
-    // 45. 受動的収入
+    // 46. 受動的収入
     {
-        id: 45,
+        id: 46,
         text: "頑張って動かなくても生活費を超える収入が常に入ってきますか？",
         choices: [
             { text: "はい", score: 1, isLevel5Requirement: 'hasPassiveIncome' },
@@ -1164,9 +1180,9 @@ const clQuestions = [
         ]
     },
     
-    // 46. 生涯資産
+    // 47. 生涯資産
     {
-        id: 46,
+        id: 47,
         text: "働かなくても一生食べていける資産がありますか？",
         choices: [
             { text: "はい", score: 1, isLevel5Requirement: 'hasLifetimeAssets' },
@@ -1179,7 +1195,7 @@ const clQuestions = [
 const personalityQuestions = [
     // === 行動エネルギー軸の質問（25問）===
     {
-        id: 47,
+        id: 48,
         text: "週末の理想的な過ごし方は？",
         supplement: "最もリラックスでき、充実感を得られる休日",
         choices: [
@@ -1190,7 +1206,7 @@ const personalityQuestions = [
     },
     
     {
-        id: 48,
+        id: 49,
         text: "パーティーや飲み会が終わるタイミングのあなたは？",
         supplement: "楽しい時間を過ごした後の心身の状態",
         choices: [
@@ -1201,7 +1217,7 @@ const personalityQuestions = [
     },
     
     {
-        id: 49,
+        id: 50,
         text: "新しいアイデアを思いついた時、どうする？",
         supplement: "ひらめいた瞬間の行動パターン",
         choices: [
@@ -1212,7 +1228,7 @@ const personalityQuestions = [
     },
     
     {
-        id: 50,
+        id: 51,
         text: "カフェで勉強や仕事をする時、どんな席を選ぶ？",
         choices: [
             { text: "角の静かな席、できれば壁に向かって座れるところ", scores: { S1: 2 } },
@@ -1983,6 +1999,11 @@ function determineLevel() {
             const choice = question.choices[answerIndex];
             const score = choice.score;
             
+            // レベル4要件のチェック
+            if (choice.isLevel4Requirement) {
+                level4Requirements[choice.isLevel4Requirement] = (score === 1);
+            }
+            
             // レベル5要件のチェック
             if (choice.isLevel5Requirement) {
                 level5Requirements[choice.isLevel5Requirement] = (score === 1);
@@ -2032,7 +2053,7 @@ function determineLevel() {
     });
     
     // レベルゲート方式での判定
-    const totalQuestions = 46; // 質問数を46に更新
+    const totalQuestions = 47; // 質問数を47に更新
     
     // レベル1のゲート：防衛的回答が20%以上ならレベル1
     if (levelScores.level1 / totalQuestions >= 0.20) return 1;
@@ -2060,6 +2081,9 @@ function determineLevel() {
         return 2;
     }
     
+    // レベル4の新しい要件チェック
+    const meetsLevel4Requirements = level4Requirements.receivesMonthlyGratitude;
+    
     // レベル5の新しい要件チェック
     const meetsLevel5Requirements = 
         level5Requirements.hasPublicRecognition &&
@@ -2067,16 +2091,16 @@ function determineLevel() {
         level5Requirements.hasPassiveIncome &&
         level5Requirements.hasLifetimeAssets;
     
-    // レベル6の判定：レベル5要件も満たしている必要がある
-    if (hasLevel6Check && levelScores.level6 >= 3 && level5BothPositive && level4BothPositive && meetsLevel5Requirements) {
+    // レベル6の判定：レベル4,5要件も満たしている必要がある
+    if (hasLevel6Check && levelScores.level6 >= 3 && level5BothPositive && level4BothPositive && meetsLevel4Requirements && meetsLevel5Requirements) {
         determinedLevel = 6;
     }
-    // レベル5の判定：新しい要件を全て満たしている必要がある
-    else if (hasLevel5Check && levelScores.level5 >= 3 && level4BothPositive && meetsLevel5Requirements) {
+    // レベル5の判定：レベル4要件も満たしている必要がある
+    else if (hasLevel5Check && levelScores.level5 >= 3 && level4BothPositive && meetsLevel4Requirements && meetsLevel5Requirements) {
         determinedLevel = 5;
     }
-    // レベル4の判定：レベル3確認質問が両方+1である必要がある
-    else if (hasLevel4Check && levelScores.level4 >= 3) {
+    // レベル4の判定：新しい要件を満たしている必要がある
+    else if (hasLevel4Check && levelScores.level4 >= 3 && meetsLevel4Requirements) {
         determinedLevel = 4;
     }
     // レベル3の判定（レベル3確認質問は既にクリア済み）
@@ -2149,6 +2173,9 @@ function startQuiz() {
         V2: 0, M2: 0, G2: 0,
         A3: 0, M3: 0, E3: 0,
         CL: 0
+    };
+    level4Requirements = {
+        receivesMonthlyGratitude: false
     };
     level5Requirements = {
         hasPublicRecognition: false,
@@ -2294,9 +2321,9 @@ function calculateResults() {
         }
     });
     
-    // CLスコアの正規化（最大46問なので、範囲を調整）
-    const maxPossibleCL = 46;
-    const minPossibleCL = -92; // -2 * 46
+    // CLスコアの正規化（最大47問なので、範囲を調整）
+    const maxPossibleCL = 47;
+    const minPossibleCL = -94; // -2 * 47
     // スコアを0-100の範囲に正規化
     scores.CL = ((scores.CL - minPossibleCL) / (maxPossibleCL - minPossibleCL)) * 100;
     
