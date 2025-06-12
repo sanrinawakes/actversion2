@@ -549,6 +549,14 @@ let levelScores = {
     level6: 0   // 超越的な回答数
 };
 
+// レベル5判定用の質問への回答を保存
+let level5Requirements = {
+    hasPublicRecognition: false,
+    hasTrainedSuccessors: false,
+    hasPassiveIncome: false,
+    hasLifetimeAssets: false
+};
+
 // ===== 同意チェックボックスの監視 =====
 document.addEventListener('DOMContentLoaded', function() {
     const checkbox = document.getElementById('agreement-check');
@@ -563,7 +571,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// ===== 意識レベル測定用質問（42問）改善版 =====
+// ===== 意識レベル測定用質問（46問）改善版 =====
 const clQuestions = [
     // 1. 朝起きたとき
     {
@@ -778,19 +786,19 @@ const clQuestions = [
     },
     
     // 17. お金の制約と意識レベル
-{
-    id: 17,
-    text: "過去半年間を振り返り、お金のことで我慢したことはありますか？",
-    choices: [
-        { text: "お金の制約を感じることはなく、高額なものでも必要なものはすべて手に入れてきた", score: 1 },
-        { text: "収入や貯金が少なく、日常的に多くのことを我慢せざるを得ない", score: -2 },
-        { text: "買えるものと我慢するものがある", score: 0 },
-        { text: "高価なものは望まないようにしている", score: 0 },
-        { text: "ギリギリ綱渡り状態", score: -1 },
-        { text: "足りない時は誰かに借りたり支払いを待ってもらった", score: -2 },
-        { text: "お金がないことで自分の可能性が制限されていると感じる", score: -1 }
-    ]
-},
+    {
+        id: 17,
+        text: "過去半年間を振り返り、お金のことで我慢したことはありますか？",
+        choices: [
+            { text: "お金の制約を感じることはなく、高額なものでも必要なものはすべて手に入れてきた", score: 1 },
+            { text: "収入や貯金が少なく、日常的に多くのことを我慢せざるを得ない", score: -2 },
+            { text: "買えるものと我慢するものがある", score: 0 },
+            { text: "高価なものは望まないようにしている", score: 0 },
+            { text: "ギリギリ綱渡り状態", score: -1 },
+            { text: "足りない時は誰かに借りたり支払いを待ってもらった", score: -2 },
+            { text: "お金がないことで自分の可能性が制限されていると感じる", score: -1 }
+        ]
+    },
     
     // 18. 相談を受けた時
     {
@@ -876,7 +884,7 @@ const clQuestions = [
         text: "タイミングや運のよさ",
         choices: [
             { text: "可もなく不可もなく", score: 0 },
-             { text: "あまり意識していない", score: 0 },
+            { text: "あまり意識していない", score: 0 },
             { text: "なぜか物事がトントン拍子ですすみ、奇跡的なタイミングで発展していく", score: 1 },
             { text: "タイミングが悪いと思うことが多い", score: -2 },
             { text: "いい意味で予想外の、想像していたより素晴らしい展開になることが多い", score: 1 },
@@ -973,7 +981,7 @@ const clQuestions = [
             { text: "努力と結果のバランスを理解し、無理なく継続できている", score: 1 },
             { text: "非効率で、頑張りに対しての報いが少ない気がする", score: -1 },
             { text: "時々そういうこともあるが、気にしないようにしている", score: 0 },
-            { text: "努力の方向を見直して、効果的な方法を見つけられることが多い", score: 1 },
+            { text: "努力の方向を見直して、効果的な方法を見つけられることが多い", score: 1 }
         ]
     },
     
@@ -1123,6 +1131,47 @@ const clQuestions = [
             { text: "どんな人にも深い愛と慈悲、つながりを感じる", score: 1, isLevel6Check: true },
             { text: "他者はいない/自分自身を見ている感覚になる", score: 1, isLevel6Check: true, isHighLevel: true }
         ]
+    },
+    
+    // 追加のレベル5判定質問
+    // 43. 公的認知度
+    {
+        id: 43,
+        text: "とある分野や地域で1万人以上があなたのことをポジティブなイメージで認識していますか？",
+        choices: [
+            { text: "はい", score: 1, isLevel5Requirement: 'hasPublicRecognition' },
+            { text: "いいえ", score: 0 }
+        ]
+    },
+    
+    // 44. 後継者育成
+    {
+        id: 44,
+        text: "知見や経験をシェアしたりアドバイスすることで、後続・後継となる人たちが100人以上育っていますか？",
+        choices: [
+            { text: "はい", score: 1, isLevel5Requirement: 'hasTrainedSuccessors' },
+            { text: "いいえ", score: 0 }
+        ]
+    },
+    
+    // 45. 受動的収入
+    {
+        id: 45,
+        text: "頑張って動かなくても生活費を超える収入が常に入ってきますか？",
+        choices: [
+            { text: "はい", score: 1, isLevel5Requirement: 'hasPassiveIncome' },
+            { text: "いいえ", score: 0 }
+        ]
+    },
+    
+    // 46. 生涯資産
+    {
+        id: 46,
+        text: "働かなくても一生食べていける資産がありますか？",
+        choices: [
+            { text: "はい", score: 1, isLevel5Requirement: 'hasLifetimeAssets' },
+            { text: "いいえ", score: 0 }
+        ]
     }
 ];
 
@@ -1130,40 +1179,40 @@ const clQuestions = [
 const personalityQuestions = [
     // === 行動エネルギー軸の質問（25問）===
     {
-        id: 43,
+        id: 47,
         text: "週末の理想的な過ごし方は？",
         supplement: "最もリラックスでき、充実感を得られる休日",
         choices: [
             { text: "家でゆっくり本を読んだり、趣味に没頭したり、一人の時間を満喫する", scores: { S1: 2 } },
-            { text: "友達と会ったり、イベントに参加したり、人と一緒に楽しむ", scores: { P1: 2 } }
-            { text: "午前は一人でゆっくり、午後は家族や友人と過ごすなど、バランスよく", scores: { M1: 2 } },
+            { text: "友達と会ったり、イベントに参加したり、人と一緒に楽しむ", scores: { P1: 2 } },
+            { text: "午前は一人でゆっくり、午後は家族や友人と過ごすなど、バランスよく", scores: { M1: 2 } }
         ]
     },
     
     {
-        id: 44,
+        id: 48,
         text: "パーティーや飲み会が終わるタイミングのあなたは？",
         supplement: "楽しい時間を過ごした後の心身の状態",
         choices: [
             { text: "楽しかったし、程よい疲れ。明日はゆっくり過ごそう", scores: { M1: 2 } },
-            { text: "まだまだ元気！二次会行く？もっと話したい！", scores: { P1: 2 } }
-            { text: "大勢は疲れるから、一人きりでゆっくりしよう", scores: { S1: 2 } },
+            { text: "まだまだ元気！二次会行く？もっと話したい！", scores: { P1: 2 } },
+            { text: "大勢は疲れるから、一人きりでゆっくりしよう", scores: { S1: 2 } }
         ]
     },
     
     {
-        id: 45,
+        id: 49,
         text: "新しいアイデアを思いついた時、どうする？",
         supplement: "ひらめいた瞬間の行動パターン",
         choices: [
-            { text: "すぐに誰かに話して、一緒にワクワクしながら発展させる", scores: { P1: 2 } }
+            { text: "すぐに誰かに話して、一緒にワクワクしながら発展させる", scores: { P1: 2 } },
             { text: "まず一人でじっくり考えて、ある程度まとまってから人に話す", scores: { S1: 2 } },
-            { text: "少し考えてから、信頼できる人に相談してブラッシュアップ", scores: { M1: 2 } },
+            { text: "少し考えてから、信頼できる人に相談してブラッシュアップ", scores: { M1: 2 } }
         ]
     },
     
     {
-        id: 46,
+        id: 50,
         text: "カフェで勉強や仕事をする時、どんな席を選ぶ？",
         choices: [
             { text: "角の静かな席、できれば壁に向かって座れるところ", scores: { S1: 2 } },
@@ -1173,18 +1222,18 @@ const personalityQuestions = [
     },
     
     {
-        id: 47,
+        id: 51,
         text: "友達から『今度みんなで集まろう！』と誘われたら？",
         supplement: "大人数での集まりへの誘いに対する本音",
         choices: [
-            { text: "やった！楽しみ！AさんもBさんも来るかな？", scores: { P1: 2 } }
+            { text: "やった！楽しみ！AさんもBさんも来るかな？", scores: { P1: 2 } },
             { text: "メンバーと内容次第かな。楽しそうなら参加する", scores: { M1: 2 } },
-             { text: "少人数か一対一の方がいいな", scores: { S1: 2 } },
+            { text: "少人数か一対一の方がいいな", scores: { S1: 2 } }
         ]
     },
     
     {
-        id: 48,
+        id: 52,
         text: "電話がかかってきた時の反応は？",
         choices: [
             { text: "できればメッセージの方がいいな", scores: { S1: 2 } },
@@ -1194,58 +1243,58 @@ const personalityQuestions = [
     },
     
     {
-        id: 49,
+        id: 53,
         text: "旅行の計画を立てる時のスタイルは？",
         choices: [
             { text: "人数や行き先は柔軟に。その時の気分で決める", scores: { M1: 2 } },
-             { text: "一人旅", scores: { S1: 2 } },
+            { text: "一人旅", scores: { S1: 2 } },
             { text: "大人数でワイワイ！", scores: { P1: 2 } }
         ]
     },
     
     {
-        id: 50,
+        id: 54,
         text: "初対面の人が多い場所での振る舞いは？",
         supplement: "パーティや交流会など、知らない人ばかりの集まりでの行動",
         choices: [
             { text: "端の方で様子を見ながら。親しい人とだけ話す", scores: { S1: 2 } },
-            { text: "積極的に自己紹介して、どんどん輪を広げていく", scores: { P1: 2 } }
-            { text: "最初は様子見、慣れてきたら自然に会話に参加", scores: { M1: 2 } },
+            { text: "積極的に自己紹介して、どんどん輪を広げていく", scores: { P1: 2 } },
+            { text: "最初は様子見、慣れてきたら自然に会話に参加", scores: { M1: 2 } }
         ]
     },
     
     {
-        id: 51,
+        id: 55,
         text: "ストレス解消法として効果的なのは？",
         choices: [
-            { text: "友達とおしゃべりしたり、にぎやかに過ごして発散", scores: { P1: 2 } }
+            { text: "友達とおしゃべりしたり、にぎやかに過ごして発散", scores: { P1: 2 } },
             { text: "一人で音楽を聴いたり、散歩したり、静かに過ごす", scores: { S1: 2 } },
-            { text: "状況によって一人の時間と人と会うことを使い分ける", scores: { M1: 2 } },
+            { text: "状況によって一人の時間と人と会うことを使い分ける", scores: { M1: 2 } }
         ]
     },
     
     {
-        id: 52,
+        id: 56,
         text: "誕生日の理想的な過ごし方は？",
         choices: [
-             { text: "昼は家族と、夜は友達となど、複数の小さなお祝い", scores: { M1: 2 } },
+            { text: "昼は家族と、夜は友達となど、複数の小さなお祝い", scores: { M1: 2 } },
             { text: "家族や親友とささやかにお祝い、または一人でゆっくり", scores: { S1: 2 } },
             { text: "サプライズパーティー！たくさんの人に祝ってもらいたい", scores: { P1: 2 } }
         ]
     },
     
     {
-        id: 53,
+        id: 57,
         text: "会議やミーティングでの発言スタイルは？",
         choices: [
-            { text: "思いついたらすぐ発言、議論を活発にする", scores: { P1: 2 } }
+            { text: "思いついたらすぐ発言、議論を活発にする", scores: { P1: 2 } },
             { text: "じっくり考えてから、必要な時に的確に発言", scores: { S1: 2 } },
-            { text: "様子を見ながら、タイミングを見て発言", scores: { M1: 2 } },
+            { text: "様子を見ながら、タイミングを見て発言", scores: { M1: 2 } }
         ]
     },
     
     {
-        id: 54,
+        id: 58,
         text: "SNSの使い方は？",
         choices: [
             { text: "見る専門、または限られた人とだけつながる/仕事柄やっているだけでプライベートではほぼしない", scores: { S1: 2 } },
@@ -1255,7 +1304,7 @@ const personalityQuestions = [
     },
     
     {
-        id: 55,
+        id: 59,
         text: "新しい趣味を始める時のアプローチは？",
         choices: [
             { text: "本や動画やオンラインでじっくり学びはじめる", scores: { S1: 2 } },
@@ -1265,17 +1314,17 @@ const personalityQuestions = [
     },
     
     {
-        id: 56,
+        id: 60,
         text: "買い物に行く時のスタイルは？",
         choices: [
             { text: "時には一人で、時には誰かと一緒に", scores: { M1: 2 } },
-            { text: "友達や家族と一緒に、相談しながら楽しく選ぶ", scores: { P1: 2 } }
-            { text: "一人でじっくり見て回り、自分のペースで決める", scores: { S1: 2 } },
+            { text: "友達や家族と一緒に、相談しながら楽しく選ぶ", scores: { P1: 2 } },
+            { text: "一人でじっくり見て回り、自分のペースで決める", scores: { S1: 2 } }
         ]
     },
     
     {
-        id: 57,
+        id: 61,
         text: "カラオケに誘われたら？",
         choices: [
             { text: "メンバー次第で楽しめる。適度に歌う", scores: { M1: 2 } },
@@ -1285,7 +1334,7 @@ const personalityQuestions = [
     },
     
     {
-        id: 58,
+        id: 62,
         text: "休憩時間の理想の過ごし方は？",
         choices: [
             { text: "一人で静かに休む、スマホを見たり本を読んだり", scores: { S1: 2 } },
@@ -1295,47 +1344,47 @@ const personalityQuestions = [
     },
     
     {
-        id: 59,
+        id: 63,
         text: "グループLINEでの振る舞いは？",
         choices: [
-            { text: "積極的に発言して盛り上げる", scores: { P1: 2 } }
+            { text: "積極的に発言して盛り上げる", scores: { P1: 2 } },
             { text: "基本的に見てるだけ、必要な時だけ返信", scores: { S1: 2 } },
-            { text: "話題によって参加したり、静観したり", scores: { M1: 2 } },
+            { text: "話題によって参加したり、静観したり", scores: { M1: 2 } }
         ]
     },
     
     {
-        id: 60,
+        id: 64,
         text: "運動やスポーツをするなら？",
         choices: [
             { text: "一人でできるランニングやヨガ、筋トレなど", scores: { S1: 2 } },
-            { text: "チームスポーツやグループレッスンが楽しい", scores: { P1: 2 } }
-             { text: "一人でも団体でもどちらも楽しめる", scores: { M1: 2 } },
+            { text: "チームスポーツやグループレッスンが楽しい", scores: { P1: 2 } },
+            { text: "一人でも団体でもどちらも楽しめる", scores: { M1: 2 } }
         ]
     },
     
     {
-        id: 61,
+        id: 65,
         text: "映画を見るなら？",
         choices: [
-             { text: "誰かと一緒に見て、終わったら感想を語り合いたい", scores: { P1: 2 } }
+            { text: "誰かと一緒に見て、終わったら感想を語り合いたい", scores: { P1: 2 } },
             { text: "一人で集中して見たい。感想は心の中に", scores: { S1: 2 } },
-            { text: "一人でも誰かとでも、どちらも良い", scores: { M1: 2 } },
+            { text: "一人でも誰かとでも、どちらも良い", scores: { M1: 2 } }
         ]
     },
     
     {
-        id: 62,
+        id: 66,
         text: "何か悩み事がある時は？",
         choices: [
             { text: "基本的に一人で考えて決める", scores: { S1: 2 } },
-            { text: "すぐに誰かに話して、一緒に考えてもらう", scores: { P1: 2 } }
-             { text: "ある程度考えてから、信頼できる人に相談", scores: { M1: 2 } },
+            { text: "すぐに誰かに話して、一緒に考えてもらう", scores: { P1: 2 } },
+            { text: "ある程度考えてから、信頼できる人に相談", scores: { M1: 2 } }
         ]
     },
     
     {
-        id: 63,
+        id: 67,
         text: "理想的な仕事環境は？",
         choices: [
             { text: "個室や仕切りがあって、集中できる静かな環境", scores: { S1: 2 } },
@@ -1345,7 +1394,7 @@ const personalityQuestions = [
     },
     
     {
-        id: 64,
+        id: 68,
         text: "待ち合わせの時間より早く着いたら？",
         choices: [
             { text: "本を読んだりスマホを見たり、一人の時間を楽しむ", scores: { S1: 2 } },
@@ -1355,17 +1404,17 @@ const personalityQuestions = [
     },
     
     {
-        id: 65,
+        id: 69,
         text: "プレゼントを選ぶ時は？",
         choices: [
             { text: "じっくり相手のことを考えて、一人で選ぶ", scores: { S1: 2 } },
-             { text: "友達と一緒に買い物に行って、みんなで選ぶ", scores: { P1: 2 } }
-            { text: "基本は一人で選ぶが、迷ったら誰かに相談", scores: { M1: 2 } },
+            { text: "友達と一緒に買い物に行って、みんなで選ぶ", scores: { P1: 2 } },
+            { text: "基本は一人で選ぶが、迷ったら誰かに相談", scores: { M1: 2 } }
         ]
     },
     
     {
-        id: 66,
+        id: 70,
         text: "新しい職場や学校での最初の一週間は？",
         choices: [
             { text: "まずは観察して、できれば向こうから話しかけてくれるのを待つ", scores: { S1: 2 } },
@@ -1375,40 +1424,40 @@ const personalityQuestions = [
     },
     
     {
-        id: 67,
+        id: 71,
         text: "感動した時の反応は？",
         choices: [
             { text: "状況によって、表現したり内に秘めたり", scores: { M1: 2 } },
-            { text: "すぐに誰かと共有したい！SNSに投稿することも", scores: { P1: 2 } }
-             { text: "心の中で深く味わい、あまり表に出さない", scores: { S1: 2 } },
+            { text: "すぐに誰かと共有したい！SNSに投稿することも", scores: { P1: 2 } },
+            { text: "心の中で深く味わい、あまり表に出さない", scores: { S1: 2 } }
         ]
     },
     
     // === 思考傾向軸（25問）===
     {
-        id: 68,
+        id: 72,
         text: "料理を作る時のアプローチは？",
         supplement: "新しい料理に挑戦する時の姿勢",
         choices: [
             { text: "『この組み合わせ面白そう！』と直感でアレンジを加える", scores: { V2: 2 } },
-            { text: "レシピ通りに正確に、分量もきっちり計る", scores: { G2: 2 } }
-             { text: "基本のレシピを参考に、少しだけ自分流にアレンジ", scores: { M2: 2 } },
+            { text: "レシピ通りに正確に、分量もきっちり計る", scores: { G2: 2 } },
+            { text: "基本のレシピを参考に、少しだけ自分流にアレンジ", scores: { M2: 2 } }
         ]
     },
     
     {
-        id: 69,
+        id: 73,
         text: "旅行の計画を立てる時は？",
         supplement: "行き先や日程の決め方",
         choices: [
-             { text: "時間単位で綿密に計画、予約も全て事前に", scores: { G2: 2 } }
+            { text: "時間単位で綿密に計画、予約も全て事前に", scores: { G2: 2 } },
             { text: "行き当たりばったりも楽しい！大まかな方向だけ決める", scores: { V2: 2 } },
-            { text: "主要な場所は決めるが、細かいところは現地で", scores: { M2: 2 } },
+            { text: "主要な場所は決めるが、細かいところは現地で", scores: { M2: 2 } }
         ]
     },
     
     {
-        id: 70,
+        id: 74,
         text: "新しい家電を買った時、説明書は？",
         choices: [
             { text: "見ないでとりあえず触ってみる。分からなくなったら見る", scores: { V2: 2 } },
@@ -1418,17 +1467,17 @@ const personalityQuestions = [
     },
     
     {
-        id: 71,
+        id: 75,
         text: "将来の夢や目標について聞かれたら？",
         choices: [
             { text: "『世界を変えたい！』みたいな大きなビジョンを語りたい", scores: { V2: 2 } },
-             { text: "実現可能な具体的な計画を詳しく説明したい", scores: { G2: 2 } }
-            { text: "理想と現実のバランスを考えた目標を話したい", scores: { M2: 2 } },
+            { text: "実現可能な具体的な計画を詳しく説明したい", scores: { G2: 2 } },
+            { text: "理想と現実のバランスを考えた目標を話したい", scores: { M2: 2 } }
         ]
     },
     
     {
-        id: 72,
+        id: 76,
         text: "友達との会話で盛り上がるのは？",
         choices: [
             { text: "最近の出来事から深い話まで、幅広い話題", scores: { M2: 2 } },
@@ -1438,7 +1487,7 @@ const personalityQuestions = [
     },
     
     {
-        id: 73,
+        id: 77,
         text: "DIYや工作をする時は？",
         choices: [
             { text: "イメージだけで作り始め、作りながら形にしていく", scores: { V2: 2 } },
@@ -1448,27 +1497,27 @@ const personalityQuestions = [
     },
     
     {
-        id: 74,
+        id: 78,
         text: "何か問題が起きた時の解決方法は？",
         choices: [
-             { text: "新しい方法と実績ある方法を組み合わせて解決", scores: { M2: 2 } },
+            { text: "新しい方法と実績ある方法を組み合わせて解決", scores: { M2: 2 } },
             { text: "『こんな新しい方法はどう？』と革新的なアイデアを出す", scores: { V2: 2 } },
             { text: "過去の成功事例を参考に、確実な方法を選ぶ", scores: { G2: 2 } }
         ]
     },
     
     {
-        id: 75,
+        id: 79,
         text: "お金の使い方は？",
         choices: [
-             { text: "予算を決めて、計画的に使う", scores: { G2: 2 } }
+            { text: "予算を決めて、計画的に使う", scores: { G2: 2 } },
             { text: "『これは面白そう！』と直感で使うことが多い", scores: { V2: 2 } },
-            { text: "計画的な部分と衝動的な部分のバランスを取る", scores: { M2: 2 } },
+            { text: "計画的な部分と衝動的な部分のバランスを取る", scores: { M2: 2 } }
         ]
     },
     
     {
-        id: 76,
+        id: 80,
         text: "新しいことを学ぶ時は？",
         supplement: "例：新しい言語、楽器、スポーツなど",
         choices: [
@@ -1479,17 +1528,17 @@ const personalityQuestions = [
     },
     
     {
-        id: 77,
+        id: 81,
         text: "片付けや整理整頓は？",
         choices: [
             { text: "創造的な散らかり方？必要な物はなんとなく分かる", scores: { V2: 2 } },
-            { text: "すべて定位置に。きっちり整理整頓されている", scores: { G2: 2 } }
-             { text: "基本は整理するが、多少の散らかりは気にしない", scores: { M2: 2 } },
+            { text: "すべて定位置に。きっちり整理整頓されている", scores: { G2: 2 } },
+            { text: "基本は整理するが、多少の散らかりは気にしない", scores: { M2: 2 } }
         ]
     },
     
     {
-        id: 78,
+        id: 82,
         text: "新商品や新サービスへの反応は？",
         choices: [
             { text: "評判を少し確認してから試してみる", scores: { M2: 2 } },
@@ -1499,57 +1548,57 @@ const personalityQuestions = [
     },
     
     {
-        id: 79,
+        id: 83,
         text: "時間の感覚は？",
         choices: [
             { text: "時間を忘れて没頭することが多い。", scores: { V2: 2 } },
-            { text: "5分前行動が基本。時間はきっちり守る", scores: { G2: 2 } }
-             { text: "基本は時間を守るが、柔軟に対応もできる", scores: { M2: 2 } },
-        ]
-    },
-    
-    {
-        id: 80,
-        text: "写真を撮る時のスタイルは？",
-        choices: [
-             { text: "記録として正確に、分かりやすく撮る", scores: { G2: 2 } }
-            { text: "アーティスティックな構図や不思議な角度で撮る", scores: { V2: 2 } },
-            { text: "きれいに撮れればOK。時々凝った写真も", scores: { M2: 2 } },
-        ]
-    },
-    
-    {
-        id: 81,
-        text: "占いや心理テストに対しては？",
-        choices: [
-            { text: "大好き！可能性や自分の知らない一面を知りたい", scores: { V2: 2 } },
-            { text: "科学的根拠がないものは信じない", scores: { G2: 2 } }
-            { text: "話のネタとして楽しむ程度", scores: { M2: 2 } },
-        ]
-    },
-    
-    {
-        id: 82,
-        text: "仕事や勉強のスタイルは？",
-        choices: [
-            { text: "計画も立てるが、状況に応じて柔軟に進める", scores: { M2: 2 } },
-            { text: "毎日コツコツ、計画通りに進める", scores: { G2: 2 } }
-             { text: "インスピレーションが湧いた時に一気に進める", scores: { V2: 2 } },
-        ]
-    },
-    
-    {
-        id: 83,
-        text: "服を選ぶ基準は？",
-        choices: [
-            { text: "個性的で人と違うもの、新しいスタイルに挑戦", scores: { V2: 2 } },
-            { text: "実用的で長く使える定番アイテムを選ぶ", scores: { G2: 2 } }
-             { text: "トレンドも意識しつつ、自分に似合うものを", scores: { M2: 2 } },
+            { text: "5分前行動が基本。時間はきっちり守る", scores: { G2: 2 } },
+            { text: "基本は時間を守るが、柔軟に対応もできる", scores: { M2: 2 } }
         ]
     },
     
     {
         id: 84,
+        text: "写真を撮る時のスタイルは？",
+        choices: [
+            { text: "記録として正確に、分かりやすく撮る", scores: { G2: 2 } },
+            { text: "アーティスティックな構図や不思議な角度で撮る", scores: { V2: 2 } },
+            { text: "きれいに撮れればOK。時々凝った写真も", scores: { M2: 2 } }
+        ]
+    },
+    
+    {
+        id: 85,
+        text: "占いや心理テストに対しては？",
+        choices: [
+            { text: "大好き！可能性や自分の知らない一面を知りたい", scores: { V2: 2 } },
+            { text: "科学的根拠がないものは信じない", scores: { G2: 2 } },
+            { text: "話のネタとして楽しむ程度", scores: { M2: 2 } }
+        ]
+    },
+    
+    {
+        id: 86,
+        text: "仕事や勉強のスタイルは？",
+        choices: [
+            { text: "計画も立てるが、状況に応じて柔軟に進める", scores: { M2: 2 } },
+            { text: "毎日コツコツ、計画通りに進める", scores: { G2: 2 } },
+            { text: "インスピレーションが湧いた時に一気に進める", scores: { V2: 2 } }
+        ]
+    },
+    
+    {
+        id: 87,
+        text: "服を選ぶ基準は？",
+        choices: [
+            { text: "個性的で人と違うもの、新しいスタイルに挑戦", scores: { V2: 2 } },
+            { text: "実用的で長く使える定番アイテムを選ぶ", scores: { G2: 2 } },
+            { text: "トレンドも意識しつつ、自分に似合うものを", scores: { M2: 2 } }
+        ]
+    },
+    
+    {
+        id: 88,
         text: "会議やブレストでの発言は？",
         choices: [
             { text: "『突拍子もないけど…』と斬新なアイデアを出す", scores: { V2: 2 } },
@@ -1559,27 +1608,27 @@ const personalityQuestions = [
     },
     
     {
-        id: 85,
+        id: 89,
         text: "ニュースを見る時に注目するのは？",
         choices: [
-             { text: "幅広いジャンルをバランスよくチェック", scores: { M2: 2 } },
+            { text: "幅広いジャンルをバランスよくチェック", scores: { M2: 2 } },
             { text: "未来を変える新技術や、社会の大きな変化", scores: { V2: 2 } },
             { text: "生活に直結する実用的な情報", scores: { G2: 2 } }
         ]
     },
     
     {
-        id: 86,
+        id: 90,
         text: "ゲームをする時のプレイスタイルは？",
         choices: [
             { text: "基本に忠実に、時々冒険もする", scores: { M2: 2 } },
-            { text: "攻略法通りに、確実にクリアを目指す", scores: { G2: 2 } }
-             { text: "新しい戦略や裏技を見つけるのが楽しい", scores: { V2: 2 } },
+            { text: "攻略法通りに、確実にクリアを目指す", scores: { G2: 2 } },
+            { text: "新しい戦略や裏技を見つけるのが楽しい", scores: { V2: 2 } }
         ]
     },
     
     {
-        id: 87,
+        id: 91,
         text: "話し方の特徴は？",
         choices: [
             { text: "相手に合わせて、分かりやすく話す", scores: { M2: 2 } },
@@ -1589,7 +1638,7 @@ const personalityQuestions = [
     },
     
     {
-        id: 88,
+        id: 92,
         text: "よくまわりから言われる言葉は？？",
         choices: [
             { text: "アイディアマンだね、夢があるね、ビジョンがすごいね", scores: { V2: 2 } },
@@ -1599,37 +1648,37 @@ const personalityQuestions = [
     },
     
     {
-        id: 89,
+        id: 93,
         text: "プレゼントをもらった時、嬉しいのは？",
         choices: [
             { text: "センスが良くて、使い勝手も良いもの", scores: { M2: 2 } },
-            { text: "欲しいものリストから選んでくれたもの", scores: { G2: 2 } }
-             { text: "サプライズ！予想外のユニークなもの", scores: { V2: 2 } },
+            { text: "欲しいものリストから選んでくれたもの", scores: { G2: 2 } },
+            { text: "サプライズ！予想外のユニークなもの", scores: { V2: 2 } }
         ]
     },
     
     {
-        id: 90,
+        id: 94,
         text: "新年の抱負や目標は？",
         choices: [
-             { text: "現実的だけど、少しチャレンジングな目標", scores: { M2: 2 } },
+            { text: "現実的だけど、少しチャレンジングな目標", scores: { M2: 2 } },
             { text: "『今年は人生を変える！』大きな変革を目指す", scores: { V2: 2 } },
             { text: "確実に達成できる、具体的で測定可能な目標", scores: { G2: 2 } }
         ]
     },
     
     {
-        id: 91,
+        id: 95,
         text: "部屋の模様替えをする時は？",
         choices: [
             { text: "『こんな感じ！』とイメージ優先で大胆に変える", scores: { V2: 2 } },
-            { text: "サイズを測って、配置図を描いてから実行", scores: { G2: 2 } }
-             { text: "だいたいのイメージを決めて、やりながら調整", scores: { M2: 2 } },
+            { text: "サイズを測って、配置図を描いてから実行", scores: { G2: 2 } },
+            { text: "だいたいのイメージを決めて、やりながら調整", scores: { M2: 2 } }
         ]
     },
     
     {
-        id: 92,
+        id: 96,
         text: "『もし1億円当たったら？』という話題では？",
         choices: [
             { text: "壮大な夢を語る。世界一周旅行とか起業とか！", scores: { V2: 2 } },
@@ -1640,18 +1689,18 @@ const personalityQuestions = [
     
     // === 評価基準軸（25問）===
     {
-        id: 93,
+        id: 97,
         text: "友達が『この服似合う？』と聞いてきたら？",
         supplement: "正直微妙だなと思った時の対応",
         choices: [
             { text: "『悪くないけど、こっちの方がもっと似合いそう！』と代案", scores: { M3: 2 } },
-            { text: "『うん、いいと思う！』と相手の気持ちを優先", scores: { E3: 2 } }
-             { text: "『正直に言うと、前の方が似合ってたかな』と言ってあげるのが誠実", scores: { A3: 2 } },
+            { text: "『うん、いいと思う！』と相手の気持ちを優先", scores: { E3: 2 } },
+            { text: "『正直に言うと、前の方が似合ってたかな』と言ってあげるのが誠実", scores: { A3: 2 } }
         ]
     },
     
     {
-        id: 94,
+        id: 98,
         text: "グループで何かを決める時、重視するのは？",
         choices: [
             { text: "最も効率的で合理的な選択肢かどうか", scores: { A3: 2 } },
@@ -1661,7 +1710,7 @@ const personalityQuestions = [
     },
     
     {
-        id: 95,
+        id: 99,
         text: "誰かが泣いている時の対応は？",
         choices: [
             { text: "原因を聞いて、解決策を一緒に考える", scores: { A3: 2 } },
@@ -1671,37 +1720,37 @@ const personalityQuestions = [
     },
     
     {
-        id: 96,
+        id: 100,
         text: "仕事や勉強でチームを組む時、どんな人と組みたい？",
         choices: [
-             { text: "能力と人柄のバランスが良い人", scores: { M3: 2 } },
+            { text: "能力と人柄のバランスが良い人", scores: { M3: 2 } },
             { text: "実力があって、確実に成果を出せる人", scores: { A3: 2 } },
             { text: "一緒にいて楽しく、お互いを思いやれる人", scores: { E3: 2 } }
         ]
     },
     
     {
-        id: 97,
+        id: 101,
         text: "褒められて一番嬉しいのは？",
         choices: [
             { text: "『論理的で頭がいい』『仕事ができる』", scores: { A3: 2 } },
-            { text: "『優しい』『一緒にいると安心する』", scores: { E3: 2 } }
-             { text: "『バランスが取れてて頼りになる』", scores: { M3: 2 } },
+            { text: "『優しい』『一緒にいると安心する』", scores: { E3: 2 } },
+            { text: "『バランスが取れてて頼りになる』", scores: { M3: 2 } }
         ]
     },
     
     {
-        id: 98,
+        id: 102,
         text: "映画やドラマを選ぶなら？",
         choices: [
-             { text: "感動系、恋愛もの、人間ドラマ", scores: { E3: 2 } }
+            { text: "感動系、恋愛もの、人間ドラマ", scores: { E3: 2 } },
             { text: "ミステリーやSF、ドキュメンタリーなど知的なもの", scores: { A3: 2 } },
-            { text: "ジャンルは問わず、評価の高い作品", scores: { M3: 2 } },
+            { text: "ジャンルは問わず、評価の高い作品", scores: { M3: 2 } }
         ]
     },
     
     {
-        id: 99,
+        id: 103,
         text: "議論や討論の時のスタイルは？",
         choices: [
             { text: "データと論理で、客観的に正しさを証明する", scores: { A3: 2 } },
@@ -1711,17 +1760,17 @@ const personalityQuestions = [
     },
     
     {
-        id: 100,
+        id: 104,
         text: "リーダーとして大切にしたいことは？",
         choices: [
-             { text: "メンバー一人一人の気持ちと成長", scores: { E3: 2 } }
+            { text: "メンバー一人一人の気持ちと成長", scores: { E3: 2 } },
             { text: "明確な目標設定と、効率的な達成方法", scores: { A3: 2 } },
-            { text: "成果も大切だが、チームの調和も重視", scores: { M3: 2 } },
+            { text: "成果も大切だが、チームの調和も重視", scores: { M3: 2 } }
         ]
     },
     
     {
-        id: 101,
+        id: 105,
         text: "プレゼントを選ぶ時の基準は？",
         choices: [
             { text: "実用的で長く使えるもの", scores: { A3: 2 } },
@@ -1731,37 +1780,37 @@ const personalityQuestions = [
     },
     
     {
-        id: 102,
+        id: 106,
         text: "誰かがミスをした時の対応は？",
         choices: [
             { text: "原因を分析して、再発防止策を一緒に考える", scores: { A3: 2 } },
-            { text: "『誰にでもあることだよ』と優しくフォロー", scores: { E3: 2 } }
-            { text: "まず励まして、それから改善策を考える", scores: { M3: 2 } },
+            { text: "『誰にでもあることだよ』と優しくフォロー", scores: { E3: 2 } },
+            { text: "まず励まして、それから改善策を考える", scores: { M3: 2 } }
         ]
     },
     
     {
-        id: 103,
+        id: 107,
         text: "恋愛において重視するのは？",
         choices: [
-             { text: "感情的なつながり、心の温かさ", scores: { E3: 2 } }
+            { text: "感情的なつながり、心の温かさ", scores: { E3: 2 } },
             { text: "価値観の一致、将来性、条件面", scores: { A3: 2 } },
-            { text: "相性の良さ、バランスの取れた関係", scores: { M3: 2 } },
+            { text: "相性の良さ、バランスの取れた関係", scores: { M3: 2 } }
         ]
     },
     
     {
-        id: 104,
+        id: 108,
         text: "困っている人を見かけたら？",
         choices: [
             { text: "本当に助けが必要か判断してから行動", scores: { A3: 2 } },
-             { text: "すぐに『大丈夫ですか？』と声をかける", scores: { E3: 2 } }
-            { text: "状況を見て、必要そうなら助ける", scores: { M3: 2 } },
+            { text: "すぐに『大丈夫ですか？』と声をかける", scores: { E3: 2 } },
+            { text: "状況を見て、必要そうなら助ける", scores: { M3: 2 } }
         ]
     },
     
     {
-        id: 105,
+        id: 109,
         text: "怒りを感じた時の表現は？",
         choices: [
             { text: "感情も伝えながら、建設的に伝える", scores: { M3: 2 } },
@@ -1771,37 +1820,37 @@ const personalityQuestions = [
     },
     
     {
-        id: 106,
+        id: 110,
         text: "チームの雰囲気が悪い時、あなたは？",
         choices: [
             { text: "問題の原因を分析し、解決策を提案", scores: { A3: 2 } },
-            { text: "明るく振る舞って、雰囲気を和ませる", scores: { E3: 2 } }
-             { text: "みんなの意見を聞いて、調整役になる", scores: { M3: 2 } },
+            { text: "明るく振る舞って、雰囲気を和ませる", scores: { E3: 2 } },
+            { text: "みんなの意見を聞いて、調整役になる", scores: { M3: 2 } }
         ]
     },
     
     {
-        id: 107,
+        id: 111,
         text: "大切な決断をする時の判断基準は？",
         choices: [
             { text: "論理と直感の両方を考慮", scores: { M3: 2 } },
-            { text: "心の声、直感、関わる人の幸せ", scores: { E3: 2 } }
-             { text: "データ、確率、論理的な分析結果", scores: { A3: 2 } },
+            { text: "心の声、直感、関わる人の幸せ", scores: { E3: 2 } },
+            { text: "データ、確率、論理的な分析結果", scores: { A3: 2 } }
         ]
     },
     
     {
-        id: 108,
+        id: 112,
         text: "感動して涙が出るのは？",
         choices: [
             { text: "めったに泣かない。論理的に感動を理解", scores: { A3: 2 } },
-            { text: "感動も悲しみも素直に表現する", scores: { E3: 2 } }
-             { text: "時々。でも人前では我慢することも", scores: { M3: 2 } },
+            { text: "感動も悲しみも素直に表現する", scores: { E3: 2 } },
+            { text: "時々。でも人前では我慢することも", scores: { M3: 2 } }
         ]
     },
     
     {
-        id: 109,
+        id: 113,
         text: "ケンカや対立が起きた時は？",
         choices: [
             { text: "どちらが正しいか、論理的に判断する", scores: { A3: 2 } },
@@ -1811,7 +1860,7 @@ const personalityQuestions = [
     },
     
     {
-        id: 110,
+        id: 114,
         text: "人を評価する時、最も重視するのは？",
         choices: [
             { text: "能力、実績、結果", scores: { A3: 2 } },
@@ -1821,27 +1870,27 @@ const personalityQuestions = [
     },
     
     {
-        id: 111,
+        id: 115,
         text: "アドバイスをする時のスタイルは？",
         choices: [
             { text: "問題点と解決策を明確に伝える", scores: { A3: 2 } },
-             { text: "まず共感して、一緒に考える姿勢", scores: { E3: 2 } }
-            { text: "相手の状況に応じて伝え方を調整", scores: { M3: 2 } },
+            { text: "まず共感して、一緒に考える姿勢", scores: { E3: 2 } },
+            { text: "相手の状況に応じて伝え方を調整", scores: { M3: 2 } }
         ]
     },
     
     {
-        id: 112,
+        id: 116,
         text: "『正しさ』と『優しさ』どちらが大切？",
         choices: [
             { text: "正しいことを貫くのが結果的に皆のため", scores: { A3: 2 } },
             { text: "優しさがあれば、多少の間違いは許される", scores: { E3: 2 } },
-             { text: "時と場合による。バランスが大切", scores: { M3: 2 } }
+            { text: "時と場合による。バランスが大切", scores: { M3: 2 } }
         ]
     },
     
     {
-        id: 113,
+        id: 117,
         text: "SNSで好きな発信内容は？",
         choices: [
             { text: "役立つ情報、論理的な意見、分析", scores: { A3: 2 } },
@@ -1851,7 +1900,7 @@ const personalityQuestions = [
     },
     
     {
-        id: 114,
+        id: 118,
         text: "買い物で迷った時の決め手は？",
         choices: [
             { text: "機能、性能、コストパフォーマンス", scores: { A3: 2 } },
@@ -1861,7 +1910,7 @@ const personalityQuestions = [
     },
     
     {
-        id: 115,
+        id: 119,
         text: "理想の上司・先輩は？",
         choices: [
             { text: "実力もあり、人間的にも尊敬できる人", scores: { M3: 2 } },
@@ -1871,17 +1920,17 @@ const personalityQuestions = [
     },
     
     {
-        id: 116,
+        id: 120,
         text: "会話で大切にしているのは？",
         choices: [
-             { text: "心が通い合う、温かいコミュニケーション", scores: { E3: 2 } }
+            { text: "心が通い合う、温かいコミュニケーション", scores: { E3: 2 } },
             { text: "正確な情報伝達と論理的な展開", scores: { A3: 2 } },
-            { text: "内容も大切だが、相手との関係性も重視", scores: { M3: 2 } },
+            { text: "内容も大切だが、相手との関係性も重視", scores: { M3: 2 } }
         ]
     },
     
     {
-        id: 117,
+        id: 121,
         text: "理想の世界は？",
         choices: [
             { text: "合理的で効率的、公平な世界", scores: { A3: 2 } },
@@ -1934,6 +1983,11 @@ function determineLevel() {
             const choice = question.choices[answerIndex];
             const score = choice.score;
             
+            // レベル5要件のチェック
+            if (choice.isLevel5Requirement) {
+                level5Requirements[choice.isLevel5Requirement] = (score === 1);
+            }
+            
             // レベル確認質問をチェック
             if (choice.isLevel4Check && score > 0) hasLevel4Check = true;
             if (choice.isLevel5Check && score > 0) hasLevel5Check = true;
@@ -1978,7 +2032,7 @@ function determineLevel() {
     });
     
     // レベルゲート方式での判定
-    const totalQuestions = 42;
+    const totalQuestions = 46; // 質問数を46に更新
     
     // レベル1のゲート：防衛的回答が20%以上ならレベル1
     if (levelScores.level1 / totalQuestions >= 0.20) return 1;
@@ -1992,7 +2046,7 @@ function determineLevel() {
     // 通常のレベル判定
     let determinedLevel = 3; // デフォルト
     
-   // レベル3確認質問（質問35, 36）が両方+1でないとレベル3以上にはなれない
+    // レベル3確認質問（質問35, 36）が両方+1でないとレベル3以上にはなれない
     const level3BothPositive = level3CheckScores.length === 2 && level3CheckScores.every(score => score === 1);
     
     // レベル4確認質問（質問37, 38）が両方+1でないとレベル4以上にはなれない
@@ -2006,12 +2060,19 @@ function determineLevel() {
         return 2;
     }
     
-    // レベル6の判定：レベル5確認質問も両方+1である必要がある
-    if (hasLevel6Check && levelScores.level6 >= 3 && level5BothPositive && level4BothPositive) {
+    // レベル5の新しい要件チェック
+    const meetsLevel5Requirements = 
+        level5Requirements.hasPublicRecognition &&
+        level5Requirements.hasTrainedSuccessors &&
+        level5Requirements.hasPassiveIncome &&
+        level5Requirements.hasLifetimeAssets;
+    
+    // レベル6の判定：レベル5要件も満たしている必要がある
+    if (hasLevel6Check && levelScores.level6 >= 3 && level5BothPositive && level4BothPositive && meetsLevel5Requirements) {
         determinedLevel = 6;
     }
-    // レベル5の判定：レベル4確認質問も両方+1である必要がある
-    else if (hasLevel5Check && levelScores.level5 >= 3 && level4BothPositive) {
+    // レベル5の判定：新しい要件を全て満たしている必要がある
+    else if (hasLevel5Check && levelScores.level5 >= 3 && level4BothPositive && meetsLevel5Requirements) {
         determinedLevel = 5;
     }
     // レベル4の判定：レベル3確認質問が両方+1である必要がある
@@ -2028,7 +2089,7 @@ function determineLevel() {
         if (moneyQuestionScore < 0) {
             // スコアが0未満（-1または-2）の場合
             if (positiveAnswerCount >= 30) {
-                // ポジティブ回答が30問以上（約71%）なら最高レベル3まで
+                // ポジティブ回答が30問以上（約65%）なら最高レベル3まで
                 determinedLevel = Math.min(determinedLevel, 3);
             } else {
                 // それ以外は最高レベル2まで
@@ -2088,6 +2149,12 @@ function startQuiz() {
         V2: 0, M2: 0, G2: 0,
         A3: 0, M3: 0, E3: 0,
         CL: 0
+    };
+    level5Requirements = {
+        hasPublicRecognition: false,
+        hasTrainedSuccessors: false,
+        hasPassiveIncome: false,
+        hasLifetimeAssets: false
     };
     loadQuestion();
 }
@@ -2227,9 +2294,9 @@ function calculateResults() {
         }
     });
     
-    // CLスコアの正規化（最大42問なので、範囲を調整）
-    const maxPossibleCL = 42;
-    const minPossibleCL = -84; // -2 * 42
+    // CLスコアの正規化（最大46問なので、範囲を調整）
+    const maxPossibleCL = 46;
+    const minPossibleCL = -92; // -2 * 46
     // スコアを0-100の範囲に正規化
     scores.CL = ((scores.CL - minPossibleCL) / (maxPossibleCL - minPossibleCL)) * 100;
     
@@ -2248,8 +2315,9 @@ function showResults() {
     document.getElementById('code-example').textContent = resultCode;
     
     // 統計情報を空にする
-const statsContainer = document.getElementById('statistics-container');
-statsContainer.innerHTML = '';
+    const statsContainer = document.getElementById('statistics-container');
+    statsContainer.innerHTML = '';
+}
 
 function getPercentileEstimate(level) {
     const percentiles = {
