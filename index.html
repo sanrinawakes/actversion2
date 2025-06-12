@@ -2061,8 +2061,15 @@ function determineLevel() {
     // レベル2のゲート：葛藤的回答が30%以上ならレベル2
     if ((levelScores.level1 + levelScores.level2) / totalQuestions >= 0.30) return 2;
     
-    // 新しい制限：-1が3つ以上または-2が1つ以上ある場合はレベル2まで
-    if (negativeOneCount >= 3 || negativeTwoCount >= 1) return 2;
+    // ネガティブ回答による制限
+// レベル2上限：-2が5つ以上、または-1と-2合わせて10個以上
+if (negativeTwoCount >= 5 || (negativeOneCount + negativeTwoCount) >= 10) {
+    return 2;
+}
+// レベル3上限：-2が3つ以上、または-1と-2合わせて5個以上
+else if (negativeTwoCount >= 3 || (negativeOneCount + negativeTwoCount) >= 5) {
+    return 3;
+}
     
     // 通常のレベル判定
     let determinedLevel = 3; // デフォルト
