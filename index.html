@@ -800,7 +800,8 @@ const clQuestions = [
             { text: "収入や貯金が少なく、日常的に多くのことを我慢せざるを得ない", score: -2 },
             { text: "買えるものと我慢するものがある", score: 0 },
             { text: "高価なものは望まないようにしている", score: 0 },
-            { text: "ギリギリ綱渡り状態", score: -1 },
+            { text: "必要なタイミングでお金が入ってくるので、誰からもお金は借りず、何も我慢することもなかった", score: 1 },
+            { text: "ギリギリ綱渡り状態だが支払いの遅延はない", score: -1 },
             { text: "足りない時は誰かに借りたり支払いを待ってもらった", score: -2 },
             { text: "お金がないことで自分の可能性が制限されていると感じる", score: -1 }
         ]
@@ -2121,20 +2122,16 @@ if (!level3SumPositive) {
     }
     
     // お金の制約による上限設定
-    if (moneyQuestionScore !== null) {
-        if (moneyQuestionScore < 0) {
-            // スコアが0未満（-1または-2）の場合
-            if (positiveAnswerCount >= 30) {
-                // ポジティブ回答が30問以上（約65%）なら最高レベル3まで
-                determinedLevel = Math.min(determinedLevel, 3);
-            } else {
-                // それ以外は最高レベル2まで
-                determinedLevel = Math.min(determinedLevel, 2);
-            }
-        } else if (moneyQuestionScore < 1) {
-            // スコアが1未満（0）の場合、最高レベル3まで
-            determinedLevel = Math.min(determinedLevel, 3);
-        }
+if (moneyQuestionScore !== null) {
+    if (moneyQuestionScore < 0) {
+        // -1以下ならレベル2上限
+        determinedLevel = Math.min(determinedLevel, 2);
+    } else if (moneyQuestionScore === 0) {
+        // 0ならレベル3上限
+        determinedLevel = Math.min(determinedLevel, 3);
+    }
+    // +1なら制限なし（何もしない）
+}
     }
     
     return determinedLevel;
