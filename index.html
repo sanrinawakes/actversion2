@@ -1118,8 +1118,8 @@ const clQuestions = [
         id: 41,
         text: "「自分という存在が溶けて、世界とひとつにつながっている」と深く感じた体験があり、それが自分の生き方に影響を与えていますか？",
         choices: [
-            { text: "そういった感覚はまったくない", score: -2 },
-            { text: "よくわからない", score: -1 },
+            { text: "そういった感覚はまったくない。考えたことすらない", score: -2 },
+            { text: "想像することはあるが、正直よくわからない", score: -1 },
             { text: "ときどき、そう感じるような気がする", score: 0 },
             { text: "定期的に自我のない深い一体感を体験している", score: 1, isLevel6Check: true },
             { text: "常に境界のない意識で世界を見ている", score: 1, isLevel6Check: true, isHighLevel: true }
@@ -1143,7 +1143,7 @@ const clQuestions = [
     // 43. 月次感謝
     {
         id: 43,
-        text: "毎月10人以上の人から専門性、知識、スキル、行動などで直接的に助けられた、救われたと感謝されていますか？",
+        text: "毎月5人以上の人から専門性、知識、スキル、行動などで直接的に助けられた、救われたと感謝されていますか？",
         choices: [
             { text: "はい", score: 1, isLevel4Requirement: 'receivesMonthlyGratitude' },
             { text: "いいえ", score: 0 }
@@ -1164,7 +1164,7 @@ const clQuestions = [
     // 45. 後継者育成
     {
         id: 45,
-        text: "知見や経験をシェアしたりアドバイスすることで、後続・後継となる人たちが100人以上育っていますか？",
+        text: "知見や経験をシェアしたりアドバイスすることで、後続・後継となる人たちを100人以上育てた経験はありますか？",
         choices: [
             { text: "はい", score: 1, isLevel5Requirement: 'hasTrainedSuccessors' },
             { text: "いいえ", score: 0 }
@@ -1174,7 +1174,7 @@ const clQuestions = [
     // 46. 受動的収入
     {
         id: 46,
-        text: "頑張って動かなくても生活費を超える収入が常に入ってきますか？",
+        text: "あなたが提供してきた価値に対して、豊かに暮らして行く上で十分な対価や支援が循環する仕組みができていますか？ （例：印税、収入、売上、講演依頼、寄付、支援、コンテンツ収益、恩返しなど）",
         choices: [
             { text: "はい", score: 1, isLevel5Requirement: 'hasPassiveIncome' },
             { text: "いいえ", score: 0 }
@@ -1184,7 +1184,7 @@ const clQuestions = [
     // 47. 生涯資産
     {
         id: 47,
-        text: "働かなくても一生食べていける資産がありますか？",
+        text: "仮に今すぐ活動を休止し一年中遊んでいても、これまでの貢献に対する感謝や支援によって、何不自由ない生活が維持できる状態ですか？ （例：資産、生み出した価値、支援者、ファン、育てた人材などからの継続的な還元）",
         choices: [
             { text: "はい", score: 1, isLevel5Requirement: 'hasLifetimeAssets' },
             { text: "いいえ", score: 0 }
