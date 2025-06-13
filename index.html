@@ -2063,12 +2063,16 @@ function determineLevel() {
     if ((levelScores.level1 + levelScores.level2) / totalQuestions >= 0.30) return 2;
     
     // ネガティブ回答による制限
-// レベル2上限：-2が5つ以上、または-1と-2合わせて10個以上
-if (negativeTwoCount >= 5 || (negativeOneCount + negativeTwoCount) >= 10) {
+// レベル1：-2が5つ以上
+if (negativeTwoCount >= 5) {
+    return 1;
+}
+// レベル2上限：-2が3つ以上、または-1と-2合わせて10個以上
+else if (negativeTwoCount >= 3 || (negativeOneCount + negativeTwoCount) >= 10) {
     return 2;
 }
-// レベル3上限：-2が3つ以上、または-1と-2合わせて5個以上
-else if (negativeTwoCount >= 3 || (negativeOneCount + negativeTwoCount) >= 5) {
+// レベル3上限：-2が1つ以上、または-1と-2合わせて5個以上
+else if (negativeTwoCount >= 1 || (negativeOneCount + negativeTwoCount) >= 5) {
     return 3;
 }
     
