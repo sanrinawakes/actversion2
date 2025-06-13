@@ -2056,8 +2056,8 @@ function determineLevel() {
     // レベルゲート方式での判定
     const totalQuestions = 47; // 質問数を47に更新
     
-    // レベル1のゲート：防衛的回答が20%以上ならレベル1
-    if (levelScores.level1 / totalQuestions >= 0.20) return 1;
+    // レベル1のゲート：防衛的回答が10%以上（5個以上）ならレベル1
+if (levelScores.level1 / totalQuestions >= 0.10) return 1;
     
     // レベル2のゲート：葛藤的回答が30%以上ならレベル2
     if ((levelScores.level1 + levelScores.level2) / totalQuestions >= 0.30) return 2;
