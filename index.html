@@ -2122,17 +2122,26 @@ if (!level3SumPositive) {
         determinedLevel = 3;
     }
     
-    // お金の制約による上限設定
+   // お金の制約による上限設定
 if (moneyQuestionScore !== null) {
-    if (moneyQuestionScore < 0) {
-        // -1以下ならレベル2上限
+    if (moneyQuestionScore === -2) {
+        // -2なら問答無用でレベル2上限
         determinedLevel = Math.min(determinedLevel, 2);
+    } else if (moneyQuestionScore === -1) {
+        // -1ならポジティブ回答が70%以下ならレベル2上限、それ以外はレベル3上限
+        const totalAnswered = clQuestions.filter((_, i) => userAnswers[i] !== undefined).length;
+        const positiveRate = positiveAnswerCount / totalAnswered;
+        if (positiveRate <= 0.7) {
+            determinedLevel = Math.min(determinedLevel, 2);
+        } else {
+            determinedLevel = Math.min(determinedLevel, 3);
+        }
     } else if (moneyQuestionScore === 0) {
-        // 0ならレベル3上限
-        determinedLevel = Math.min(determinedLevel, 3);
+        // 0ならレベル4上限
+        determinedLevel = Math.min(determinedLevel, 4);
     }
-    // +1なら制限なし（何もしない）
 }
+
     }
     
     return determinedLevel;
